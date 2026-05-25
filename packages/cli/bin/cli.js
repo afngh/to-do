@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * afnan-cli: Local Coding Agent Terminal Interface
+ * soldier-boy-cli: Local Coding Agent Terminal Interface
  * Connects your local file system directly to your hosted unified AI API.
  */
 
@@ -11,18 +11,18 @@ import ora from 'ora';
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
-import { AfnanAI } from '@afnan/sdk';
+import { SoldierBoyAI } from '@soldier-boy/sdk';
 
 const program = new Command();
-const sdk = new AfnanAI();
+const sdk = new SoldierBoyAI();
 
 program
-  .name('afnan')
-  .description('Afnan AI Local Coding Agent terminal tools')
+  .name('soldier-boy')
+  .description('Soldier Boy Local Coding Agent terminal tools')
   .version('1.0.0');
 
 /**
- * COMMAND: afnan chat
+ * COMMAND: soldier-boy chat
  * Interactive or single-shot streaming chat command with the unified backend.
  */
 program
@@ -33,7 +33,7 @@ program
   .action(async (options) => {
     // 1. Single-shot prompt execution
     if (options.message) {
-      const spinner = ora(chalk.dim('Connecting to Afnan AI Core...')).start();
+      const spinner = ora(chalk.dim('Connecting to Soldier Boy Core...')).start();
       try {
         spinner.stop();
         console.log(chalk.bold.cyan('🤖 Assistant: '));
@@ -54,7 +54,7 @@ program
 
     // 2. Interactive Session Loop
     console.log(chalk.bold.magenta('\n========================================='));
-    console.log(chalk.bold.magenta(`  🚀 afnan CLI Interactive Session Start`));
+    console.log(chalk.bold.magenta(`  🚀 soldier-boy CLI Interactive Session Start`));
     console.log(chalk.dim(`  Persona Loaded: ${options.persona} | Port: 3000`));
     console.log(chalk.bold.magenta('=========================================\n'));
 
@@ -108,7 +108,7 @@ program
   });
 
 /**
- * COMMAND: afnan explain <file>
+ * COMMAND: soldier-boy explain <file>
  * Links the CLI directly to the local filesystem context.
  */
 program

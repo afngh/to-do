@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-class AfnanAI {
+class SoldierBoyAI {
   /**
    * Initialize the developer AI SDK client.
    * @param {Object} config - Connection configurations
@@ -8,7 +8,7 @@ class AfnanAI {
    * @param {string} config.baseUrl - Server URL endpoint
    */
   constructor({ apiKey, baseUrl } = {}) {
-    this.apiKey = apiKey || process.env.API_KEY || 'afnan-secret-key';
+    this.apiKey = apiKey || process.env.API_KEY || 'soldier-boy-secret-key';
     this.baseUrl = baseUrl || 'http://localhost:3000';
   }
 
@@ -45,7 +45,7 @@ class AfnanAI {
       return response.data;
     } catch (error) {
       const errMsg = error.response?.data?.error?.message || error.message;
-      throw new Error(`[AfnanAI SDK Error] ${errMsg}`);
+      throw new Error(`[SoldierBoyAI SDK Error] ${errMsg}`);
     }
   }
 
@@ -124,15 +124,15 @@ class AfnanAI {
         });
 
         stream.on('error', (err) => {
-          reject(new Error(`[AfnanAI SDK Stream Error] ${err.message}`));
+          reject(new Error(`[SoldierBoyAI SDK Stream Error] ${err.message}`));
         });
       });
     } catch (error) {
       const errMsg = error.response?.data?.error?.message || error.message;
-      throw new Error(`[AfnanAI SDK Error] ${errMsg}`);
+      throw new Error(`[SoldierBoyAI SDK Error] ${errMsg}`);
     }
   }
 }
 
-export default AfnanAI;
-export { AfnanAI };
+export default SoldierBoyAI;
+export { SoldierBoyAI };

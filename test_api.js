@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
-const VALID_KEY = 'afnan-secret-key';
+const VALID_KEY = 'soldier-boy-secret-key';
 
 async function runTests() {
   console.log('🧪 Starting Phase 2 Infrastructure Verification Tests...\n');

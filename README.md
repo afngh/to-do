@@ -1,4 +1,4 @@
-# 🚀 afnan-ai-core
+# 🚀 soldier-boy
 
 > A high-performance, developer-grade **Unified AI Backend API** powering an advanced, **local terminal-based coding agent CLI** (similar to Claude Code and Antigravity) linked directly to your local filesystem.
 
@@ -6,9 +6,9 @@
 
 ## 📖 The Vision
 
-**afnan-ai-core** is built to solve one major issue in AI engineering: **the friction between model providers, hosted code bases, and local terminal execution.** 
+**soldier-boy** is built to solve one major issue in AI engineering: **the friction between model providers, hosted code bases, and local terminal execution.** 
 
-Instead of writing complex, custom API integrations and authorization wrappers for every single project, **afnan-ai-core** establishes a unified, production-ready backend layer. This backend handles model routing, token-by-token SSE streaming, and auth, and serves as the single foundation for a highly capable, local command-line development agent that can read and write files on your computer.
+Instead of writing complex, custom API integrations and authorization wrappers for every single project, **soldier-boy** establishes a unified, production-ready backend layer. This backend handles model routing, token-by-token SSE streaming, and auth, and serves as the single foundation for a highly capable, local command-line development agent that can read and write files on your computer.
 
 ```text
                                ┌─────────────────────────┐
@@ -29,7 +29,7 @@ Instead of writing complex, custom API integrations and authorization wrappers f
                                             │
                                             ▼
                                ┌─────────────────────────┐
-                               │  afnan Coding Agent CLI  │  ◄── [Runs Local Terminal]
+                               │ soldier-boy Coding Agent │  ◄── [Runs Local Terminal]
                                │ (filesystemTool, exec)  │
                                └─────────────────────────┘
 ```
@@ -70,8 +70,8 @@ npm -v
 ### 2. Clone the Repository
 Clone the codebase and navigate into your workspace folder:
 ```bash
-git clone https://github.com/afngh/to-do.git afnan-ai-core
-cd afnan-ai-core
+git clone https://github.com/afngh/to-do.git soldier-boy
+cd soldier-boy
 ```
 
 ### 3. Install Dependencies
@@ -98,7 +98,7 @@ Open the `.env` file and paste your credentials:
 PORT=3000
 
 # Secret authorization key used to guard your public API backend
-API_KEY=afnan-secret-key
+API_KEY=soldier-boy-secret-key
 
 # Your Groq API Cloud key (Get one for free at console.groq.com)
 GROQ_API_KEY=your_groq_api_key_here
@@ -143,16 +143,16 @@ The CLI will read your local `src/server.js`, mount it into a prompt, send it to
 
 ---
 
-## 🔌 Using the JavaScript SDK (`@afnan/sdk`)
+## 🔌 Using the JavaScript SDK (`@soldier-boy/sdk`)
 
 If you want to integrate this unified API into your other apps, utilize our lightweight JS SDK:
 
 ```javascript
-import { AfnanAI } from './packages/sdk-js/index.js';
+import { SoldierBoyAI } from './packages/sdk-js/index.js';
 
 // Initialize SDK client
-const ai = new AfnanAI({
-  apiKey: 'afnan-secret-key',
+const ai = new SoldierBoyAI({
+  apiKey: 'soldier-boy-secret-key',
   baseUrl: 'http://localhost:3000'
 });
 
@@ -178,7 +178,7 @@ await ai.stream(
 ## 📂 Codebase Directory Layout
 
 ```text
-afnan-ai-core/
+soldier-boy/
  ├── packages/
  │    ├── cli/                  # Commander coding agent CLI utility
  │    └── sdk-js/               # Lightweight developer JS connection SDK

@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { AfnanAI } from './packages/sdk-js/index.js';
+import { SoldierBoyAI } from './packages/sdk-js/index.js';
 
 const BASE_URL = 'http://localhost:3000';
-const VALID_KEY = 'afnan-secret-key';
+const VALID_KEY = 'soldier-boy-secret-key';
 
 async function runStreamingTests() {
   console.log('🧪 Starting Phase 3 Developer Infrastructure Verification Tests...\n');
@@ -41,7 +41,7 @@ async function runStreamingTests() {
   // Test 2: JS SDK Streaming Integration
   try {
     console.log('--- Test 2: SDK stream(messages, options, onChunk) ---');
-    const sdk = new AfnanAI({ apiKey: VALID_KEY, baseUrl: BASE_URL });
+    const sdk = new SoldierBoyAI({ apiKey: VALID_KEY, baseUrl: BASE_URL });
 
     process.stdout.write('🤖 SDK Streaming Delta: ');
     const fullText = await sdk.stream(
@@ -59,7 +59,7 @@ async function runStreamingTests() {
   // Test 3: Prompt Persona Routing (coder.txt validation)
   try {
     console.log('\n--- Test 3: Prompt Persona (reviewer.txt validation) ---');
-    const sdk = new AfnanAI({ apiKey: VALID_KEY, baseUrl: BASE_URL });
+    const sdk = new SoldierBoyAI({ apiKey: VALID_KEY, baseUrl: BASE_URL });
 
     const response = await sdk.chat(
       [{ role: 'user', content: 'Who are you, and what is your strict mandate?' }],
