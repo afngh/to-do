@@ -6,7 +6,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import chatRoutes from './routes/chatRoutes.js';
-import errorHandler from './utils/errorMiddleware.js';
+import errorHandler from './middleware/errorHandler.js';
+import requestLogger from './utils/logger.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +17,9 @@ app.use(cors());
 
 // Parse incoming JSON requests
 app.use(express.json());
+
+// Enable Request Logger
+app.use(requestLogger);
 
 // Base health check route
 app.get('/health', (req, res) => {

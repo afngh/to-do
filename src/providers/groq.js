@@ -51,7 +51,11 @@ class GroqProvider {
         success: true,
         provider: 'groq',
         model: response.data.model || model,
-        content: content,
+        message: {
+          role: 'assistant',
+          content: content,
+        },
+        content: content, // maintained for absolute backwards compatibility
         usage: response.data.usage || {},
       };
     } catch (error) {

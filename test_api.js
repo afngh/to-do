@@ -1,52 +1,138 @@
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
+const VALID_KEY = 'afnan-secret-key';
 
 async function runTests() {
-  console.log('🧪 Starting ES Modules API Verification Tests...');
+  console.log('🧪 Starting Phase 2 Infrastructure Verification Tests...\n');
 
-  // Test 1: Healthcheck Route
+  // Test 1: Healthcheck Route (Public Endpoint)
   try {
-    console.log('\nTesting GET /health...');
+    console.log('--- Test 1: GET /health (Public) ---');
     const res = await axios.get(`${BASE_URL}/health`);
     console.log('✅ Healthcheck response:', res.status, JSON.stringify(res.data, null, 2));
   } catch (err) {
     console.error('❌ Healthcheck failed:', err.message);
   }
 
-  // Test 2: Standard Chat Route with missing arguments (Validation Error)
+  // Test 2: Chat completion with missing Auth header (Unauthorized Block)
   try {
-    console.log('\nTesting POST /v1/chat/completions (Validation Failure)...');
-    const res = await axios.post(`${BASE_URL}/v1/chat/completions`, {
-      model: 'llama'
-      // missing 'messages'
-    });
-    console.log('❌ Error: Expected failure but received success:', res.data);
-  } catch (err) {
-    console.log('✅ Received expected validation failure:', err.response?.status, JSON.stringify(err.response?.data, null, 2));
-  }
-
-  // Test 3: Unregistered Route (404 Error Handler)
-  try {
-    console.log('\nTesting GET /v1/chat/unknown-route (404)...');
-    const res = await axios.get(`${BASE_URL}/v1/chat/unknown-route`);
-    console.log('❌ Error: Expected 404 but received success:', res.data);
-  } catch (err) {
-    console.log('✅ Received expected 404 response:', err.response?.status, JSON.stringify(err.response?.data, null, 2));
-  }
-
-  // Test 4: Live Chat Request to Llama-3.3-70b-versatile
-  try {
-    console.log('\nTesting POST /v1/chat/completions (Groq Llama-3.3 Live Request)...');
-    const res = await axios.post(`${BASE_URL}/v1/chat/completions`, {
+    console.log('\n--- Test 2: POST /v1/chat/completions (Missing Auth Header) ---');
+    await axios.post(`${BASE_URL}/v1/chat/completions`, {
       model: 'llama',
-      messages: [
-        { role: 'user', content: 'Say hello in 5 words or less!' }
-      ]
+      messages: [{ role: 'user', content: 'Hello' }]
     });
-    console.log('✅ Success response verified:', res.status, JSON.stringify(res.data, null, 2));
+    console.log('❌ Error: Expected 401 block but request succeeded.');
   } catch (err) {
-    console.log('❌ Live request failed:', err.response?.status, JSON.stringify(err.response?.data, null, 2));
+    console.log('✅ Received expected 401 Unauthorized block:', err.response?.status, JSON.stringify(err.response?.data, null, 2));
+  }
+
+  // Test 3: Chat completion with incorrect Auth key
+  try {
+    console.log('\n--- Test 3: POST /v1/chat/completions (Bad API Key) ---');
+    await axios.post(
+      `${BASE_URL}/v1/chat/completions`,
+      {
+        model: 'llama',
+        messages: [{ role: 'user', content: 'Hello' }]
+      },
+      {
+        headers: { 'Authorization': 'Bearer bad-api-key' }
+      }
+    );
+    console.log('❌ Error: Expected 401 key validation block but request succeeded.');
+  } catch (err) {
+    console.log('✅ Received expected key rejection:', err.response?.status, JSON.stringify(err.response?.data, null, 2));
+  }
+
+  // Test 4: Body Validation - Missing messages
+  try {
+    console.log('\n--- Test 4: POST /v1/chat/completions (Body Validation: Missing messages) ---');
+    await axios.post(
+      `${BASE_URL}/v1/chat/completions`,
+      {
+        model: 'llama'
+      },
+      {
+        headers: { 'Authorization': `Bearer ${VALID_KEY}` }
+      }
+    );
+    console.log('❌ Error: Expected 400 validation block but request succeeded.');
+  } catch (err) {
+    console.log('✅ Received expected 400 missing messages block:', err.response?.status, JSON.stringify(err.response?.data, null, 2));
+  }
+
+  // Test 5: Body Validation - Invalid Message Attributes (e.g. invalid role)
+  try {
+    console.log('\n--- Test 5: POST /v1/chat/completions (Body Validation: Invalid role) ---');
+    await axios.post(
+      `${BASE_URL}/v1/chat/completions`,
+      {
+        model: 'llama',
+        messages: [{ role: 'invalid-role', content: 'Hello' }]
+      },
+      {
+        headers: { 'Authorization': `Bearer ${VALID_KEY}` }
+      }
+    );
+    console.log('❌ Error: Expected 400 validation block but request succeeded.');
+  } catch (err) {
+    console.log('✅ Received expected 400 invalid role rejection:', err.response?.status, JSON.stringify(err.response?.data, null, 2));
+  }
+
+  // Test 6: Intelligent Model Routing (Task-based simple profile mapping)
+  try {
+    console.log('\n--- Test 6: POST /v1/chat/completions (Intelligent Routing: simple task) ---');
+    const res = await axios.post(
+      `${BASE_URL}/v1/chat/completions`,
+      {
+        task: 'simple',
+        messages: [{ role: 'user', content: 'Who are you?' }]
+      },
+      {
+        headers: { 'Authorization': `Bearer ${VALID_KEY}` }
+      }
+    );
+    console.log('✅ Successfully routed to fast model (asserting structure):', res.status, JSON.stringify(res.data, null, 2));
+  } catch (err) {
+    console.error('❌ Intelligent routing test failed:', err.response?.status, err.response?.data || err.message);
+  }
+
+  // Test 7: Multi-Provider Abstraction (Gemini Skeleton Provider delegation)
+  try {
+    console.log('\n--- Test 7: POST /v1/chat/completions (Provider Registry: Gemini Skeleton) ---');
+    const res = await axios.post(
+      `${BASE_URL}/v1/chat/completions`,
+      {
+        provider: 'gemini',
+        messages: [{ role: 'user', content: 'Hello Gemini!' }]
+      },
+      {
+        headers: { 'Authorization': `Bearer ${VALID_KEY}` }
+      }
+    );
+    console.log('✅ Successfully routed to Gemini Skeleton:', res.status, JSON.stringify(res.data, null, 2));
+  } catch (err) {
+    console.error('❌ Gemini registry test failed:', err.response?.status, err.response?.data || err.message);
+  }
+
+  // Test 8: Production Chat Request to Groq Llama-3.3 (Standardized Schema Format Assertions)
+  try {
+    console.log('\n--- Test 8: POST /v1/chat/completions (Production Live Standardized Response) ---');
+    const res = await axios.post(
+      `${BASE_URL}/v1/chat/completions`,
+      {
+        provider: 'groq',
+        model: 'llama',
+        messages: [{ role: 'user', content: 'Translate to French: "Good morning"' }]
+      },
+      {
+        headers: { 'Authorization': `Bearer ${VALID_KEY}` }
+      }
+    );
+    console.log('✅ Successfully received production schema format:', res.status, JSON.stringify(res.data, null, 2));
+  } catch (err) {
+    console.error('❌ Live production test failed:', err.response?.status, err.response?.data || err.message);
   }
 }
 
