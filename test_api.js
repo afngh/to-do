@@ -1,9 +1,9 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
 
 async function runTests() {
-  console.log('🧪 Starting API Verification Tests...');
+  console.log('🧪 Starting ES Modules API Verification Tests...');
 
   // Test 1: Healthcheck Route
   try {
@@ -28,25 +28,25 @@ async function runTests() {
 
   // Test 3: Unregistered Route (404 Error Handler)
   try {
-    console.log('\nTesting GET /v1/unknown-route (404)...');
-    const res = await axios.get(`${BASE_URL}/v1/unknown-route`);
+    console.log('\nTesting GET /v1/chat/unknown-route (404)...');
+    const res = await axios.get(`${BASE_URL}/v1/chat/unknown-route`);
     console.log('❌ Error: Expected 404 but received success:', res.data);
   } catch (err) {
     console.log('✅ Received expected 404 response:', err.response?.status, JSON.stringify(err.response?.data, null, 2));
   }
 
-  // Test 4: Chat Completion (With configured Groq Key)
+  // Test 4: Live Chat Request to Llama-3.3-70b-versatile
   try {
-    console.log('\nTesting POST /v1/chat/completions (Groq Live Request)...');
+    console.log('\nTesting POST /v1/chat/completions (Groq Llama-3.3 Live Request)...');
     const res = await axios.post(`${BASE_URL}/v1/chat/completions`, {
       model: 'llama',
       messages: [
         { role: 'user', content: 'Say hello in 5 words or less!' }
       ]
     });
-    console.log('✅ Received success response:', res.status, JSON.stringify(res.data, null, 2));
+    console.log('✅ Success response verified:', res.status, JSON.stringify(res.data, null, 2));
   } catch (err) {
-    console.log('❌ Request failed:', err.response?.status, JSON.stringify(err.response?.data, null, 2));
+    console.log('❌ Live request failed:', err.response?.status, JSON.stringify(err.response?.data, null, 2));
   }
 }
 

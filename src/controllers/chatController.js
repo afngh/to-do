@@ -1,11 +1,11 @@
-const aiService = require('../services/aiService');
+import aiService from '../services/aiService.js';
 
 class ChatController {
   /**
    * Handle the standard completions POST request.
    */
   async createChatCompletion(req, res, next) {
-    const { model, messages, provider, temperature, max_tokens } = req.body;
+    const { model, messages, temperature, max_tokens } = req.body;
 
     // Request Validation
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -15,9 +15,8 @@ class ChatController {
     }
 
     try {
-      const response = await aiService.generateCompletion(messages, {
+      const response = await aiService.generateResponse(messages, {
         model,
-        provider,
         temperature,
         max_tokens,
       });
@@ -29,4 +28,4 @@ class ChatController {
   }
 }
 
-module.exports = new ChatController();
+export default new ChatController();

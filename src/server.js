@@ -1,12 +1,15 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config();
 
+import chatRoutes from './routes/chatRoutes.js';
+import errorHandler from './utils/errorMiddleware.js';
+
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 
 // Enable Cross-Origin Resource Sharing (CORS)
 app.use(cors());
@@ -24,11 +27,8 @@ app.get('/health', (req, res) => {
   });
 });
 
-const chatRoutes = require('./routes/chatRoutes');
-const errorHandler = require('./utils/errorMiddleware');
-
-// Mount routes under /v1 namespace
-app.use('/v1', chatRoutes);
+// Register Core Chat completions router under the requested namespace
+app.use('/v1/chat', chatRoutes);
 
 // 404 Route handler
 app.use((req, res, next) => {
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
   });
 });
 
-// Global Error Handler
+// Global Error Handler Middleware
 app.use(errorHandler);
 
 // Start the server

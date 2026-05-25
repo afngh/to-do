@@ -1,11 +1,11 @@
-const express = require('express');
-const chatController = require('../controllers/chatController');
+import express from 'express';
+import chatController from '../controllers/chatController.js';
 
 const router = express.Router();
 
 // Maps to POST /v1/chat/completions
-router.post('/chat/completions', (req, res, next) => {
+router.post('/completions', (req, res, next) => {
   chatController.createChatCompletion(req, res, next);
 });
 
-module.exports = router;
+export default router;
