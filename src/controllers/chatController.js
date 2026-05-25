@@ -1,11 +1,8 @@
 import aiService from '../services/aiService.js';
 
 class ChatController {
-  /**
-   * Handle the standard completions POST request.
-   */
   async createChatCompletion(req, res, next) {
-    const { model, messages, temperature, max_tokens, provider, task } = req.body;
+    const { model, messages, temperature, max_tokens, provider, task, stream } = req.body;
 
     // 1. Basic Structure Validation
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
@@ -43,7 +40,35 @@ class ChatController {
         max_tokens,
         provider,
         task,
+        stream,
       });
+
+      if (stream) {
+        // Set headers for Server-Sent Events (SSE)
+        res.writeHead(200, {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+        });
+
+        const providerStream = response.stream;
+
+        providerStream.on('data', (chunk) => {
+          res.write(chunk);
+        });
+
+        providerStream.on('end', () => {
+          res.end();
+        });
+
+        providerStream.on('error', (err) => {
+          console.error('[Streaming Error]', err);
+          res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
+          res.end();
+        });
+
+        return;
+      }
 
       return res.status(200).json(response);
     } catch (error) {

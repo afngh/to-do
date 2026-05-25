@@ -1,6 +1,7 @@
 import groqProvider from '../providers/groq.js';
 import geminiProvider from '../providers/gemini.js';
 import openrouterProvider from '../providers/openrouter.js';
+import promptService from './promptService.js';
 
 class AIService {
   constructor() {
@@ -40,6 +41,18 @@ class AIService {
    * @returns {Promise<Object>} - Standardized Production response payload
    */
   async generateResponse(messages, options = {}) {
+    // Resolve prompt persona if requested
+    let finalMessages = [...messages];
+    if (options.persona) {
+      const systemPrompt = promptService.loadPrompt(options.persona);
+      if (systemPrompt) {
+        finalMessages.unshift({
+          role: 'system',
+          content: systemPrompt,
+        });
+      }
+    }
+
     // 1. Resolve Provider
     const providerName = options.provider || 'groq';
     const provider = this.getProvider(providerName);
@@ -61,10 +74,19 @@ class AIService {
     }
 
     // 3. Delegate execution to resolved provider
-    const response = await provider.generateCompletion(messages, {
+    const response = await provider.generateCompletion(finalMessages, {
       ...options,
       model: targetModel,
     });
+
+    if (options.stream) {
+      return {
+        success: true,
+        provider: response.provider || providerName,
+        model: response.model || targetModel,
+        stream: response.stream,
+      };
+    }
 
     // 4. Return complete, production-ready standardized schema
     return {

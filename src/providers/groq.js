@@ -25,6 +25,8 @@ class GroqProvider {
     const temperature = options.temperature ?? 0.7;
     const maxTokens = options.max_tokens ?? 1024;
 
+    const isStream = !!options.stream;
+
     try {
       const response = await axios.post(
         this.apiUrl,
@@ -33,15 +35,26 @@ class GroqProvider {
           messages,
           temperature,
           max_tokens: maxTokens,
+          stream: isStream,
         },
         {
           headers: {
             'Authorization': `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
+          responseType: isStream ? 'stream' : 'json',
           timeout: 15000, // 15 seconds timeout
         }
       );
+
+      if (isStream) {
+        return {
+          success: true,
+          provider: 'groq',
+          model: model,
+          stream: response.data,
+        };
+      }
 
       // Extract and normalize successful response data
       const choice = response.data.choices?.[0];
